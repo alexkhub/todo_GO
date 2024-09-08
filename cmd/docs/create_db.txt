@@ -1,5 +1,5 @@
 CREATE Table users(
-id int primary key ,
+id int primary key SERIAL,
 username varchar(150),
 email varchar(150) NULL,
 password varchar(150)
@@ -7,7 +7,7 @@ password varchar(150)
 );
 
 Create Table tasks(
-id int primary key,
+id int primary key SERIAL,
 user_id int REFERENCES users (id),
 title varchar(100),
 description text NULL,

@@ -3,13 +3,20 @@ package main
 import (
 	"database/sql"
 	"fmt"
-
 	"os"
 	"github.com/gin-gonic/gin"
-	hd "todo/pkg/handlers"
-
 	_ "github.com/lib/pq"
+
 )
+
+type Handler_DB struct{
+    DB  *sql.DB
+}
+type User struct{
+    Id int `json:"id"`
+    Username string `json:"username"`
+    Email string `json:"email"`
+}
 
 
 
@@ -18,7 +25,7 @@ func main() {
     "password=%s dbname=%s sslmode=disable",
     os.Getenv("HOST"), os.Getenv("PORT"), os.Getenv("USER"), os.Getenv("PASSWORD"), os.Getenv("NAME"))
 	fmt.Print(psqlInfo)
-	psqlInfo = "host=localhost port=5432 user=postgres password=root dbname=todo_GO sslmode=disable"
+	psqlInfo = "host=localhost port=5432 user=postgres password=34583458Ak dbname=todo_GO sslmode=disable"
 	db, _ := sql.Open("postgres", psqlInfo)
 	db.SetMaxIdleConns(10)
 
@@ -29,19 +36,20 @@ func main() {
 		fmt.Println("DB CONNECT")
 	}
 	defer db.Close()
+
 	
 
 
 	
+
 	router := gin.Default()
-    router.GET("/albums",hd.Alltasks)
+    
 
     router.Run("localhost:8080")
-
-
-    router.Run("localhost:8080")
-
-	
 	fmt.Println("Server start")
 
 }
+
+
+	
+	
