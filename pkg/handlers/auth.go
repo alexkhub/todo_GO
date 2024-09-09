@@ -4,8 +4,8 @@ import (
 	
 	"github.com/gin-gonic/gin"
 	"net/http"	
-	"database/sql"
 )
+
 
 type User struct{
     Id int `json:"id"`
@@ -13,12 +13,16 @@ type User struct{
     Email string `json:"email"`
 }
 
-type Handler_DB struct{
-    DB  *sql.DB
+
+func (h *Handler) Register(c *gin.Context){
+
 }
 
+func (h *Handler) Login(c *gin.Context){
 
-func (h *Handler_DB) AllUser(c *gin.Context){
+}
+
+func (h *Handler) UserList(c *gin.Context){
     users := []*User{}
     rows, err := h.DB.Query("Select id, username, email from users")
     if err != nil{
@@ -30,9 +34,7 @@ func (h *Handler_DB) AllUser(c *gin.Context){
         if err != nil{
             return 
         }
-        users = append(users, user )
-        
-        
+        users = append(users, user )       
 
     }
     defer rows.Close()

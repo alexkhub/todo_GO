@@ -3,15 +3,14 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"os"
-	"github.com/gin-gonic/gin"
-	_ "github.com/lib/pq"
+	"log"
+	todogo "todo"
+	"todo/pkg/handlers"
 
+	_ "github.com/lib/pq"
 )
 
-type Handler_DB struct{
-    DB  *sql.DB
-}
+
 type User struct{
     Id int `json:"id"`
     Username string `json:"username"`
@@ -21,11 +20,11 @@ type User struct{
 
 
 func main() {
-	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
-    "password=%s dbname=%s sslmode=disable",
-    os.Getenv("HOST"), os.Getenv("PORT"), os.Getenv("USER"), os.Getenv("PASSWORD"), os.Getenv("NAME"))
-	fmt.Print(psqlInfo)
-	psqlInfo = "host=localhost port=5432 user=postgres password=34583458Ak dbname=todo_GO sslmode=disable"
+	// psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
+    // "password=%s dbname=%s sslmode=disable",
+    // os.Getenv("HOST"), os.Getenv("PORT"), os.Getenv("USER"), os.Getenv("PASSWORD"), os.Getenv("NAME"))
+	
+	psqlInfo := "host=localhost port=5432 user=postgres password=root dbname=todo_GO sslmode=disable"
 	db, _ := sql.Open("postgres", psqlInfo)
 	db.SetMaxIdleConns(10)
 
@@ -41,12 +40,11 @@ func main() {
 
 
 	
-
-	router := gin.Default()
-    
-
-    router.Run("localhost:8080")
-	fmt.Println("Server start")
+	my_handlers := new(handlers.Handler)
+	srv := new(todogo.Server)
+	if err := srv.Run(my_handlers.InitRouter()); err != nil {
+		log.Fatalf("server dont start")
+	} 
 
 }
 
