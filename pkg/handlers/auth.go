@@ -22,6 +22,7 @@ func (h *Handler) Login(c *gin.Context){
 
 }
 
+
 func (h *Handler) UserList(c *gin.Context){
     users := []*User{}
     rows, err := h.DB.Query("Select id, username, email from users")

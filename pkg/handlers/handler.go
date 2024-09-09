@@ -20,6 +20,7 @@ func (h *Handler) InitRouter() * gin.Engine{
 	{
 		auth := api.Group("/auth")
 		{
+			
 			auth.POST("/rigister", h.Register)
 			auth.POST("/login", h.Login)
 			auth.GET("/all_user", h.UserList)

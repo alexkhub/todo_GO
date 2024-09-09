@@ -37,9 +37,6 @@ func main() {
 	defer db.Close()
 
 	
-
-
-	
 	my_handlers := new(handlers.Handler)
 	srv := new(todogo.Server)
 	if err := srv.Run(my_handlers.InitRouter()); err != nil {
