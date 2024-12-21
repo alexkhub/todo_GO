@@ -11,7 +11,6 @@ func (h *Handler) TaskDetail(c *gin.Context) {
 }
 
 func (h *Handler) TaskUpdate(c *gin.Context) {
-
 	
 }
 
