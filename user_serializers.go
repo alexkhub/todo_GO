@@ -17,3 +17,8 @@ type JWTToken struct {
 	Access string `json:"access"`
 	Refresh string `json:"refresh"`
 }
+
+type RefreshToken struct {
+	
+	Refresh string `json:"refresh"`
+}

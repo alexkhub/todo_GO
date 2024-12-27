@@ -68,9 +68,33 @@ func (h *Handler) Login(c *gin.Context){
         newErrorMessage(c, http.StatusUnauthorized, err.Error())
         return
     }
-    c.JSON(http.StatusOK, gin.H{
-        "token" : token,
-    })
+    c.JSON(http.StatusOK, token,
+    )
 }
 
 
+func (h *Handler) RefreshToken(c *gin.Context){
+    var input todogo.RefreshToken
+    
+    if err:= c.BindJSON(&input); err != nil{
+        
+        newErrorMessage(c, http.StatusBadRequest, err.Error())
+        
+        return 
+    }
+    _, err := v.ValidateStruct(input)
+    if err!= nil{
+        newErrorMessage(c, http.StatusBadRequest, err.Error())
+        
+        return 
+    }
+    
+    token, err :=  h.servies.Authorization.RefreshJWT(input.Refresh)
+    
+    if err != nil{
+        newErrorMessage(c, http.StatusUnauthorized, err.Error())
+        return
+    }
+    c.JSON(http.StatusOK, token,
+    )
+}

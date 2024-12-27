@@ -11,12 +11,14 @@ import (
 
 type Handler struct{
     servies *service.Service
+	auth service.JWTManager
+	
 	
 }
 
 
-func NewHandler(services *service.Service) *Handler{
-	return &Handler{servies: services}
+func NewHandler(services *service.Service, auth service.JWTManager) *Handler{
+	return &Handler{servies: services, auth: auth}
 }
 
 func (h *Handler) InitRouter() * gin.Engine{
@@ -29,10 +31,11 @@ func (h *Handler) InitRouter() * gin.Engine{
 			
 			auth.POST("/rigister", h.Register)
 			auth.POST("/login", h.Login)
+			auth.POST("/refresh", h.RefreshToken )
 			
 			
 		}
-		task := api.Group("/task", )
+		task := api.Group("/task",  h.parseAuthHeader)
 		{
 			task.GET("/", h.TaskList)
 			task.GET("task_detail/:id", h.TaskDetail)

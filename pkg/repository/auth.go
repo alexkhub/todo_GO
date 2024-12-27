@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+
 	todogo "todo"
 
 	"github.com/jmoiron/sqlx"
@@ -41,4 +42,21 @@ func (r *AuthPostgres) GetUser (user todogo.LoginUser)(int,  string,error){
 	}
 
 	return id, hash_password, nil
+}
+
+func (r *AuthPostgres) CreateNewRefresh(hash_id float64, refresh_token string)(error){
+	var id int
+	query := fmt.Sprintf("delete from %s where user_id = ($1) ", JWTTable)
+	_, err := r.db.Exec(query, hash_id)
+	if err != nil{
+		return err
+	}
+	query = fmt.Sprintf("Insert into %s (user_id, refresh_token) values ($1, $2) returning id", JWTTable)
+
+	row := r.db.QueryRow(query, hash_id, refresh_token)
+	if err:= row.Scan(&id); err != nil{
+		return err
+	}
+	return  nil
+
 }

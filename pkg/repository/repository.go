@@ -9,12 +9,14 @@ import (
 const (
     UserTable = "users"
     TaskTable = "task"
+    JWTTable = "refresh"
 )
 
 
 type Authorization interface{
     CreateUser(user todogo.RegisterUser) (int, error)
     GetUser(user todogo.LoginUser) (int, string, error)
+    CreateNewRefresh(hash_id float64, refresh_token string)(error)
 
 }
 
@@ -26,6 +28,7 @@ type Repository struct{
     Authorization
     Task
 }
+
 func NewRepository(db *sqlx.DB) *Repository{
     return &Repository{
         Authorization: NewAuthPostgres(db),
