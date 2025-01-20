@@ -33,44 +33,36 @@ func (s *AuthService) CreateUser(user todogo.RegisterUser) (int, error){
 
 
 func (s *AuthService) LoginUser(user todogo.LoginUser) (todogo.JWTToken, error){
-	
 	id, hash, err := s.repos.GetUser(user)
 	
 	if err!= nil{
 		return todogo.JWTToken{}, err
 	}
 	 
-	if !CheckPasswordHash(user.Password, hash) {
-		
+	if !CheckPasswordHash(user.Password, hash) {	
 		return todogo.JWTToken{}, errors.New("Password error")
 	}
 	
 	access, err := s.jwt_service.CreateJwtAccess(strconv.Itoa(id))
-	
 	if err != nil{
 		return todogo.JWTToken{}, errors.New("JWT error " + err.Error())	
 	}
-
 	
 	refresh, err := s.jwt_service.CreateJwtRefresh(strconv.Itoa(id))
-	
 	if err != nil{
 		return todogo.JWTToken{}, errors.New("JWT error " + err.Error())	
 	}
 
 	err = s.repos.CreateNewRefresh(HashUserId(id), refresh)
-
 	if err != nil{
 		return todogo.JWTToken{}, errors.New("JWT error " + err.Error())
 	}
-
 
 	return todogo.JWTToken{Access: access, Refresh: refresh}, nil
 
 }
 
 func (s *AuthService) RefreshJWT(refresh_token string) (todogo.JWTToken, error){
-
 	token, err := jwt.Parse(refresh_token, func(token *jwt.Token) (i interface{}, err error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("Parse error")
@@ -87,10 +79,6 @@ func (s *AuthService) RefreshJWT(refresh_token string) (todogo.JWTToken, error){
 	}
 
 	id := claims["sub"].(string)
-	fmt.Print(id)
-	
-
-	
 	access, err := s.jwt_service.CreateJwtAccess(id)
 	
 	if err != nil{
@@ -103,13 +91,11 @@ func (s *AuthService) RefreshJWT(refresh_token string) (todogo.JWTToken, error){
 	}
 	
     id2, _  := strconv.Atoi(id)
-
 	err = s.repos.CreateNewRefresh(HashUserId(id2), refresh)
 
 	if err != nil{
 		return todogo.JWTToken{}, errors.New("JWT error " + err.Error())
 	}
-
 
 	return todogo.JWTToken{Access: access, Refresh: refresh}, nil
 

@@ -8,7 +8,7 @@ import (
 
 const (
     UserTable = "users"
-    TaskTable = "task"
+    TaskTable = "tasks"
     JWTTable = "refresh"
 )
 
@@ -21,7 +21,11 @@ type Authorization interface{
 }
 
 type Task interface{
-
+    CreateTask(user_id int, task todogo.CreateTask)(int, error)
+    TaskList(user_id int)([]todogo.ListTask, error)
+    TaskDetail(user_id int, task_id int)(todogo.ListTask, error)
+    TaskDelete(user_id int, task_id int)( error)
+    TaskUpdate(user_id int, task_id int, input todogo.UpdateTask)(todogo.ListTask, error)
 }
 
 type Repository struct{
@@ -32,6 +36,7 @@ type Repository struct{
 func NewRepository(db *sqlx.DB) *Repository{
     return &Repository{
         Authorization: NewAuthPostgres(db),
+        Task: NewTaskPostgres(db),
         
     }
 }

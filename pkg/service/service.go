@@ -26,7 +26,11 @@ type JWTManager interface{
 
 
 type Task interface{
-
+    CreateTask(user_id int, task todogo.CreateTask)(int, error)
+    TaskList(user_id int)([]todogo.ListTask, error)
+    TaskDetail(user_id int, task_id int)(todogo.ListTask, error)
+    TaskDelete(user_id int, task_id int)( error)
+    TaskUpdate(user_id int, task_id int, input todogo.UpdateTask)(todogo.ListTask, error)
 }
 
 type Deps struct {
@@ -42,10 +46,12 @@ type Service struct{
 func NewService(deps Deps) *Service{
     new_jwt_manager := NewManager(signingKey, signingKey2)
     new_auth_service := NewAuthService(deps.Repos.Authorization, new_jwt_manager)
+    task := NewTaskService(deps.Repos.Task)
     
     
     return &Service{
         Authorization: new_auth_service,
+        Task: task,
         
 
     }

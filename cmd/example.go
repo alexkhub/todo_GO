@@ -1,15 +1,17 @@
 package main
 
 import (
+	"context"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
 	todogo "todo"
 	"todo/pkg/handlers"
 	"todo/pkg/repository"
 	"todo/pkg/service"
 
 	_ "github.com/lib/pq"
-	
-
 )
 
 const (
@@ -40,9 +42,27 @@ func main() {
 
 	my_handlers := handlers.NewHandler(services, auth)
 	srv := new(todogo.Server)
-	if err := srv.Run(my_handlers.InitRouter()); err != nil {
-		log.Fatalf("server dont start")
-	} 
+	go func() {
+		if err := srv.Run(my_handlers.InitRouter()); err != nil {
+			log.Fatalf("server dont start")
+		} 
+		}()
+
+		log.Print("TodoApp Started")
+	
+		quit := make(chan os.Signal, 1)
+		signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+		<-quit
+	
+		log.Print("TodoApp Shutting Down")
+	
+		if err := srv.Shutdown(context.Background()); err != nil {
+			log.Fatal("error occured while running http server: %s", err.Error())
+		}
+	
+		if err := db.Close(); err != nil {
+			log.Fatal("error occured while running http server: %s", err.Error())
+		}
 
 }
 

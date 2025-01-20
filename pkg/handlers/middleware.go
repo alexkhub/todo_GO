@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"errors"
-
+	"strconv"
 	"net/http"
 	"strings"
 
@@ -42,4 +42,20 @@ func (h *Handler) parseAuthHeader(c *gin.Context) {
 	c.Set("user_id", res)
 	
 	
+}
+
+func getUserId(c *gin.Context) (int, error){
+
+	id, ok := c.Get("user_id")
+	if !ok {
+
+		return 0, errors.New("user id not found")
+	}
+	
+	idInt, err := strconv.Atoi(id.(string))
+
+	if err != nil {
+		return 0, errors.New("user id not convert")
+	}
+	return idInt, nil
 }
